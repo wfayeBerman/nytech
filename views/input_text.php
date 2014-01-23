@@ -1,0 +1,1 @@
+<input type="text" id="<?php echo $inputID; ?>" name="<?php echo $inputID; ?>" value="<?php echo $inputValue; ?>" >
