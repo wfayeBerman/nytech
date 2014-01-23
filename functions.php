@@ -32,8 +32,17 @@
 
     }
 
-// CUSTOM POST TYPE PEOPLE 
-	include(get_template_directory() . '/machines/functions/custom_post_people.php');
+// CUSTOM POST TYPE SPEAKERS 
+	include(get_template_directory() . '/machines/functions/custom_post_speakers.php');
+
+// CUSTOM POST TYPE EVENTS 
+	include(get_template_directory() . '/machines/functions/custom_post_events.php');
+
+// CUSTOM POST PARTNERSHIP TYPES
+	include(get_template_directory() . '/machines/functions/custom_post_partnership_types.php');
+
+// CUSTOM POST PARTNERS
+	include(get_template_directory() . '/machines/functions/custom_post_partners.php');
 
 // GENERATE META BOXES
 	function generateMetaBoxes($arrayData){

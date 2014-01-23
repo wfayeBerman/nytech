@@ -2,12 +2,12 @@
 var $ = jQuery;
 var pageDir;
 var pageID;
-var defaultPage = 'sample-page';
-var RewriteBase = "/~illatoz/onepage/"; // if url is http://171.321.43.24/~foobar/ then the value should equal /~foobar/
+var defaultPage = 'home';
+var RewriteBase = "/~nytech/"; // if url is http://171.321.43.24/~foobar/ then the value should equal /~foobar/
 var urlArray = window.location.pathname.replace(RewriteBase, '');
 urlArray = urlArray.split("/");
 var urlQueryString = "?" + Math.floor((Math.random()*10000)+1);
-var defaultPageDir = "http://50.87.144.13/~illatoz/onepage/wp-content/themes/onepage";
+var defaultPageDir = "http://192.185.4.131/~nytech/wp-content/themes/nytech";
 var filesToVariablesArray = [
     {'text_input': 'views/input_text.php'},
     {'mainView': 'views/mainView.php'},
@@ -142,25 +142,95 @@ function startUp(){
             // subsequent pages are then dealt with
             _.each(pageOrder, function(value, index){
                 switch(index){
-                    case "foobar":
-                    pagesCollection['pageData'][index].attr('data-stellar-background-ratio', Math.random())
-                    pagesCollection['pageData'][index].css('z-index', zIndexMax--);
-                    $('.mainView').append(pagesCollection['pageData'][index]);
-                    returnJsonData('listPeople', jsonArgs1).done(function(data){
-                        console.log(data)
-                    });
+                    case "overview":
+                        pagesCollection['pageData'][index].attr('data-stellar-background-ratio', Math.random())
+                        pagesCollection['pageData'][index].css('z-index', zIndexMax--);
+                        $('.mainView').append(pagesCollection['pageData'][index]);
+                        returnJsonData('listSpeakers', jsonArgs1).done(function(data){
+                            console.log(data)
+                        });
+                        $('#overview').find('.container').append(index)
+                        $('#overview').flowtype({
+                            minFont : 28,
+                            maxFont : 36
+                        });
+                    break;
 
-                    $('#foobar').flowtype({
-                        minFont : 28,
-                        maxFont : 36
-                    });
+                    case "speakers":
+                        pagesCollection['pageData'][index].attr('data-stellar-background-ratio', Math.random())
+                        pagesCollection['pageData'][index].css('z-index', zIndexMax--);
+                        $('.mainView').append(pagesCollection['pageData'][index]);
+                        returnJsonData('listSpeakers', jsonArgs1).done(function(data){
+                            console.log(data)
+                        });
+                        $('#speakers').find('.container').append(index)
+                        $('#speakers').flowtype({
+                            minFont : 28,
+                            maxFont : 36
+                        });
+                    break;
+
+                    case "schedule":
+                        pagesCollection['pageData'][index].attr('data-stellar-background-ratio', Math.random())
+                        pagesCollection['pageData'][index].css('z-index', zIndexMax--);
+                        $('.mainView').append(pagesCollection['pageData'][index]);
+                        returnJsonData('listSpeakers', jsonArgs1).done(function(data){
+                            console.log(data)
+                        });
+                        $('#schedule').find('.container').append(index)
+                        $('#schedule').flowtype({
+                            minFont : 28,
+                            maxFont : 36
+                        });
+                    break;
+
+                    case "partners":
+                        pagesCollection['pageData'][index].attr('data-stellar-background-ratio', Math.random())
+                        pagesCollection['pageData'][index].css('z-index', zIndexMax--);
+                        $('.mainView').append(pagesCollection['pageData'][index]);
+                        returnJsonData('listSpeakers', jsonArgs1).done(function(data){
+                            console.log(data)
+                        });
+                        $('#partners').find('.container').append(index)
+                        $('#partners').flowtype({
+                            minFont : 28,
+                            maxFont : 36
+                        });
+                    break;
+
+                    case "register":
+                        pagesCollection['pageData'][index].attr('data-stellar-background-ratio', Math.random())
+                        pagesCollection['pageData'][index].css('z-index', zIndexMax--);
+                        $('.mainView').append(pagesCollection['pageData'][index]);
+                        returnJsonData('listSpeakers', jsonArgs1).done(function(data){
+                            console.log(data)
+                        });
+                        $('#register').find('.container').append(index)
+                        $('#register').flowtype({
+                            minFont : 28,
+                            maxFont : 36
+                        });
+                    break;
+
+                    case "sponsorships":
+                        pagesCollection['pageData'][index].attr('data-stellar-background-ratio', Math.random())
+                        pagesCollection['pageData'][index].css('z-index', zIndexMax--);
+                        $('.mainView').append(pagesCollection['pageData'][index]);
+                        returnJsonData('listSpeakers', jsonArgs1).done(function(data){
+                            console.log(data)
+                        });
+                        $('#sponsorships').find('.container').append(index)
+                        $('#sponsorships').flowtype({
+                            minFont : 28,
+                            maxFont : 36
+                        });
                     break;
 
                     default:
                         // pagesCollection['pageData'][index].attr('data-stellar-background-ratio', Math.random())
                         // pagesCollection['pageData'][index].css('z-index', zIndexMax--);
                         // $('.mainView').append(pagesCollection['pageData'][index]);
-                        // returnJsonData('listPeople', jsonArgs1).done(function(data){
+                        // returnJsonData('listSpeakers', jsonArgs1).done(function(data){
                         //     console.log(data)
                         // });
 
