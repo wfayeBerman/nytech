@@ -14,6 +14,7 @@ var filesToVariablesArray = [
     {'sticky_side': 'views/output_sticky_side.php'},
     {'person_item': 'views/output_person_item.php'},
     {'event_item': 'views/output_event_item.php'},
+    {'page_speakers': 'views/page_speakers.php'},
     {'slide_page': 'views/output_slide_page.php'}
 ];
 var pageOrder;
@@ -161,9 +162,17 @@ function startUp(){
                         pagesCollection['pageData'][index].css('z-index', zIndexMax--);
                         $('.mainView').append(pagesCollection['pageData'][index]);
                         returnJsonData('listSpeakers', jsonArgs1).done(function(data){
-                            console.log(data)
+
+                            // Define returnObject
+                            returnObject = $(php_page_speakers);
+
+                            // Build returnObject
+                            returnObject.find('.page-info h2').append(index);
+
+                            // Append returnObject
+                            $('#speakers').find('.container').append(returnObject)
                         });
-                        $('#speakers').find('.container').append(index)
+
                         $('#speakers').flowtype({
                             minFont : 28,
                             maxFont : 36
