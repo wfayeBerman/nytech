@@ -147,7 +147,7 @@ function startUp(){
                         pagesCollection['pageData'][index].css('z-index', zIndexMax--);
                         $('.mainView').append(pagesCollection['pageData'][index]);
                         returnJsonData('listSpeakers', jsonArgs1).done(function(data){
-                            console.log(data)
+                            //console.log(data)
                         });
                         $('#overview').find('.container').append(index)
                         $('#overview').flowtype({
@@ -175,7 +175,7 @@ function startUp(){
                         pagesCollection['pageData'][index].css('z-index', zIndexMax--);
                         $('.mainView').append(pagesCollection['pageData'][index]);
                         returnJsonData('listSpeakers', jsonArgs1).done(function(data){
-                            console.log(data)
+                            //console.log(data)
                         });
                         $('#schedule').find('.container').append(index)
                         $('#schedule').flowtype({
@@ -189,7 +189,7 @@ function startUp(){
                         pagesCollection['pageData'][index].css('z-index', zIndexMax--);
                         $('.mainView').append(pagesCollection['pageData'][index]);
                         returnJsonData('listSpeakers', jsonArgs1).done(function(data){
-                            console.log(data)
+                            //console.log(data)
                         });
                         $('#partners').find('.container').append(index)
                         $('#partners').flowtype({
@@ -203,7 +203,7 @@ function startUp(){
                         pagesCollection['pageData'][index].css('z-index', zIndexMax--);
                         $('.mainView').append(pagesCollection['pageData'][index]);
                         returnJsonData('listSpeakers', jsonArgs1).done(function(data){
-                            console.log(data)
+                            //console.log(data)
                         });
                         $('#register').find('.container').append(index)
                         $('#register').flowtype({
@@ -217,7 +217,7 @@ function startUp(){
                         pagesCollection['pageData'][index].css('z-index', zIndexMax--);
                         $('.mainView').append(pagesCollection['pageData'][index]);
                         returnJsonData('listSpeakers', jsonArgs1).done(function(data){
-                            console.log(data)
+                            //console.log(data)
                         });
                         $('#sponsorships').find('.container').append(index)
                         $('#sponsorships').flowtype({
@@ -231,7 +231,7 @@ function startUp(){
                         // pagesCollection['pageData'][index].css('z-index', zIndexMax--);
                         // $('.mainView').append(pagesCollection['pageData'][index]);
                         // returnJsonData('listSpeakers', jsonArgs1).done(function(data){
-                        //     console.log(data)
+                        //     //console.log(data)
                         // });
 
                         // $('#foobar').flowtype({
