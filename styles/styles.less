@@ -52,6 +52,14 @@
 	*vertical-align: @vAlign;
 }
 
+.textMask{
+	-webkit-text-fill-color: transparent;
+	-webkit-background-clip: text;
+	background-size: 0; /* 'Hide' bg image for all */
+	-webkit-background-size: auto; /* But show bg image for Webkit/Opera */
+	-o-background-size: 0; /* Hide for Opera. Does *NOT* work (in newer Opera's). Needs hack below :( */
+}
+
 @black: rgb(0, 0, 0);
 @white: rgb(255, 255, 255);
 @greyDarker: rgb(54, 54, 54);
@@ -87,7 +95,15 @@ a:visited {
 	color: @greyDarker;
 	text-decoration: none;
 }
+h2{
+	font-size: 2em;
 
+	color: #666; /* fallback color */
+//	.horizontal-gradient(@black, @white);
+//	background: url(http://cloud.bermangrp.com/web/clients/cssmask/images/nyc.png) repeat 0 0, white; /* select text image and fallback background color */
+	.textMask;
+
+}
 
 /* Navigation */
 
