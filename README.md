@@ -15,7 +15,7 @@ optional simple JSON data return API:
   
   
 demo:  
-http://50.87.144.13/~illatoz/onepage/
+http://192.185.4.131/~nytech/
   
 .htaccess sample  
 RewriteEngine On  
