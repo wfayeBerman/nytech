@@ -15,6 +15,12 @@ var filesToVariablesArray = [
     {'person_item': 'views/output_person_item.php'},
     {'event_item': 'views/output_event_item.php'},
     {'page_speakers': 'views/page_speakers.php'},
+    {'output_speaker': 'views/output_speaker.php'},
+    {'page_partners': 'views/page_partners.php'},
+    {'output_partners': 'views/output_partners.php'},
+    {'output_list_image': 'views/output_list_image.php'},
+    {'page_sponsorship': 'views/page_sponsorship.php'},
+    {'output_sponsorship': 'views/output_sponsorship.php'},
     {'slide_page': 'views/output_slide_page.php'}
 ];
 var pageOrder;
@@ -167,7 +173,38 @@ function startUp(){
                             returnObject = $(php_page_speakers);
 
                             // Build returnObject
-                            returnObject.find('.page-info h2').append(index);
+                            returnObject.find('.page-info h2').html(index);
+
+                            // If there is data
+                            if (!_.isEmpty(data)) {
+
+                                // Loop though speakers
+                                _.each(data, function(value, key) {
+                                    returnSpeaker = $(php_output_speaker);
+
+                                    _.each(value, function(val, k){
+                                        switch(k){
+                                            case 'attachments':
+                                                if(_.isNull(val)){
+                                                    returnSpeaker.find('.photo').remove();
+                                                } else {
+                                                    _.each(val, function(v, k) {
+                                                        returnSpeaker.find('.photo').find('img').attr('alt', value.first_name + ' ' + value.last_name);
+                                                        returnSpeaker.find('.photo').find('img').attr('src', v.thumb);
+                                                    });
+                                                }
+                                            break;
+
+                                            default:
+                                                returnSpeaker.find('.' + k).html(val);
+                                            break;
+                                        }
+                                    });
+
+                                    returnObject.find('.all-speakers').append(returnSpeaker);
+                                });
+
+                            }
 
                             // Append returnObject
                             $('#speakers').find('.container').append(returnObject)
@@ -184,7 +221,7 @@ function startUp(){
                         pagesCollection['pageData'][index].css('z-index', zIndexMax--);
                         $('.mainView').append(pagesCollection['pageData'][index]);
                         returnJsonData('listSpeakers', jsonArgs1).done(function(data){
-                            //console.log(data)
+                            // console.log(data)
                         });
                         $('#schedule').find('.container').append(index)
                         $('#schedule').flowtype({
@@ -197,10 +234,64 @@ function startUp(){
                         pagesCollection['pageData'][index].attr('data-stellar-background-ratio', Math.random())
                         pagesCollection['pageData'][index].css('z-index', zIndexMax--);
                         $('.mainView').append(pagesCollection['pageData'][index]);
-                        returnJsonData('listSpeakers', jsonArgs1).done(function(data){
-                            //console.log(data)
+                        returnJsonData('listPartnershipTypes', jsonArgs1).done(function(data) {
+
+                            // // define object
+                            returnObject = $(php_page_partners);
+
+                            // // Build object
+                            returnObject.find('.page-info h2').html(index);
+
+                            // // if data
+                            if (!_.isEmpty(data)) {
+
+                                _.each(data, function(value, key) {
+                                    returnSponsorType = $(php_output_partners);
+
+                                    returnSponsorType.attr('data-sponsorshipid', value.post_id);
+                                    returnSponsorType.find('h3').html(value.the_title);
+
+                                    returnObject.find('.all-partners').append(returnSponsorType);
+                                });
+
+                            }
+
+                            // // Return individual sponsors
+                            returnJsonData('listPartners', jsonArgs1).done(function(partnersData) {
+
+                                // loop partners
+                                if (!_.isEmpty(partnersData)) {
+
+                                    _.each(partnersData, function(value, key) {
+                                        returnPartner = $(php_output_list_image);
+
+                                        _.each(value, function(val, k) {
+                                            switch(k) {
+                                                 case "post_id":
+                                                    returnPartner.data('partnerid', val);
+                                                break;
+                                                case "attachments":
+                                                if (val != null) {
+                                                    _.each(val, function(l, m) {
+                                                        returnPartner.find('img').attr('src', l.thumb);
+                                                    })
+                                                }
+                                                break;
+                                            }
+                                        });
+                                        
+                                        $('.all-partners').find('div[data-sponsorshipid="'+ value.partnership_type +'"]').append(returnPartner);
+
+                                    });
+
+                                }
+
+                                console.log(partnersData);
+
+                            });
+
+                            $('#partners').find('.container').append(returnObject);
                         });
-                        $('#partners').find('.container').append(index)
                         $('#partners').flowtype({
                             minFont : 28,
                             maxFont : 36
@@ -225,10 +316,41 @@ function startUp(){
                         pagesCollection['pageData'][index].attr('data-stellar-background-ratio', Math.random())
                         pagesCollection['pageData'][index].css('z-index', zIndexMax--);
                         $('.mainView').append(pagesCollection['pageData'][index]);
-                        returnJsonData('listSpeakers', jsonArgs1).done(function(data){
-                            //console.log(data)
+                        returnJsonData('listPartnershipTypes', jsonArgs1).done(function(data) {
+
+                            // define object
+                            returnObject = $(php_page_sponsorship);
+
+                            // build object
+                            returnObject.find('.page-info h2').html(index);
+
+                            // if data
+                            if (!_.isEmpty(data)) {
+
+                                // loop sponsorship types
+                                _.each(data, function(value, key) {
+                                    returnSponsorship = $(php_output_sponsorship);
+
+                                    _.each(value, function(val, k) {
+                                        switch(k) {
+                                            case "post_id":
+                                                returnSponsorship.data('sponsorshipid', val);
+                                            break;
+
+                                            default:
+                                                returnSponsorship.find('.' + k).html(_.unescape(val));
+                                            break;
+                                        }
+                                    });
+
+                                    returnObject.find('.all-sponsorship').append(returnSponsorship);
+                                });
+
+                            }
+
+                            console.log(data)
+                            $('#sponsorships').find('.container').append(returnObject)
                         });
-                        $('#sponsorships').find('.container').append(index)
                         $('#sponsorships').flowtype({
                             minFont : 28,
                             maxFont : 36
@@ -513,4 +635,3 @@ function startUp(){
                 };
             }());
         }
-
