@@ -11,9 +11,10 @@ var defaultPageDir = "http://192.185.4.131/~nytech/wp-content/themes/nytech";
 var filesToVariablesArray = [
     {'text_input': 'views/input_text.php'},
     {'mainView': 'views/mainView.php'},
+    {'page_section': 'views/page_section.php'},
     {'sticky_side': 'views/output_sticky_side.php'},
     {'person_item': 'views/output_person_item.php'},
-    {'event_item': 'views/output_event_item.php'},
+    {'event_item': 'views/output_event.php'},
     {'page_speakers': 'views/page_speakers.php'},
     {'output_speaker': 'views/output_speaker.php'},
     {'page_partners': 'views/page_partners.php'},
@@ -21,6 +22,7 @@ var filesToVariablesArray = [
     {'output_list_image': 'views/output_list_image.php'},
     {'page_sponsorship': 'views/page_sponsorship.php'},
     {'output_sponsorship': 'views/output_sponsorship.php'},
+    {'menu_hover': 'views/menu_hover.php'},
     {'slide_page': 'views/output_slide_page.php'}
 ];
 var pageOrder;
@@ -35,21 +37,21 @@ $(document).ready(function() {
     } else {
         pageDir = $('body').data('tempdir');
     }
-    loadFilesToVariables(filesToVariablesArray);
-        // var config = {
-        //  kitId: 'mhq7lpe',
-        //  scriptTimeout: 1000,
-        //  loading: function() {
-        //  // JavaScript to execute when fonts start loading
-        //  },
-        //  active: function() {
-        //      loadFilesToVariables(filesToVariablesArray);
-        //  },
-        //  inactive: function() {
-        //      loadFilesToVariables(filesToVariablesArray);
-        //  }
-        // };
-        // var h=document.getElementsByTagName("html")[0];h.className+=" wf-loading";var t=setTimeout(function(){h.className=h.className.replace(/(\s|^)wf-loading(\s|$)/g," ");h.className+=" wf-inactive"},config.scriptTimeout);var tk=document.createElement("script"),d=false;tk.src='//use.typekit.net/'+config.kitId+'.js';tk.type="text/javascript";tk.async="true";tk.onload=tk.onreadystatechange=function(){var a=this.readyState;if(d||a&&a!="complete"&&a!="loaded")return;d=true;clearTimeout(t);try{Typekit.load(config)}catch(b){}};var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(tk,s)
+    // loadFilesToVariables(filesToVariablesArray);
+        var config = {
+         kitId: 'sqj0cba',
+         scriptTimeout: 1000,
+         loading: function() {
+         // JavaScript to execute when fonts start loading
+         },
+         active: function() {
+             loadFilesToVariables(filesToVariablesArray);
+         },
+         inactive: function() {
+             loadFilesToVariables(filesToVariablesArray);
+         }
+        };
+        var h=document.getElementsByTagName("html")[0];h.className+=" wf-loading";var t=setTimeout(function(){h.className=h.className.replace(/(\s|^)wf-loading(\s|$)/g," ");h.className+=" wf-inactive"},config.scriptTimeout);var tk=document.createElement("script"),d=false;tk.src='//use.typekit.net/'+config.kitId+'.js';tk.type="text/javascript";tk.async="true";tk.onload=tk.onreadystatechange=function(){var a=this.readyState;if(d||a&&a!="complete"&&a!="loaded")return;d=true;clearTimeout(t);try{Typekit.load(config)}catch(b){}};var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(tk,s)
     });
 
 // LOAD FILES TO VARIABLES
@@ -139,12 +141,19 @@ function startUp(){
                 jsonArgs1={
                     idArray: []
                 }
-                pagesCollection['pageData'][defaultPage].attr('data-stellar-background-ratio', '0.07');
+                pagesCollection['pageData'][defaultPage].attr('data-stellar-background-ratio', Math.random());
                 pagesCollection['pageData'][defaultPage].css('z-index', zIndexMax--);
+
+                
                 $('.mainView').append(pagesCollection['pageData'][defaultPage]);
-                $('#' + defaultPage).flowtype({
-                    minFont : 21
+
+                // Flowtype
+                $('#home').flowtype({
+                    minFont : 21,
+                    maxFont : 80
                 });
+                 $('#home').removeClass('displayNone');
+
             }
             // subsequent pages are then dealt with
             _.each(pageOrder, function(value, index){
@@ -153,14 +162,34 @@ function startUp(){
                         pagesCollection['pageData'][index].attr('data-stellar-background-ratio', Math.random())
                         pagesCollection['pageData'][index].css('z-index', zIndexMax--);
                         $('.mainView').append(pagesCollection['pageData'][index]);
-                        returnJsonData('listSpeakers', jsonArgs1).done(function(data){
-                            //console.log(data)
+
+                        // get page data
+                        returnPageData(index).done(function(data) {
+                            // define object
+                            returnObject = $(php_page_section);
+
+                            // build object
+                            returnObject.find('.pageInfo h2').html('Forum ' + index);
+                            returnObject.find('.all-content').addClass(index);
+                            returnObject.find('.all-content').html(_.unescape(data));
+
+                            $('#' + index).find('.container').html(returnObject);
+
+                            $('#' + index).find('.pageInfo').flowtype({
+                                minFont : 16,
+                                maxFont : 115,
+                            });
+
+                            $('#' + index).find('.all-content').flowtype({
+                                minFont : 16,
+                                maxFont : 115,
+                            });
+
+                            $('#' + index).removeClass('displayNone');
+
                         });
-                        $('#overview').find('.container').append(index)
-                        $('#overview').flowtype({
-                            minFont : 28,
-                            maxFont : 36
-                        });
+
+
                     break;
 
                     case "speakers":
@@ -168,12 +197,11 @@ function startUp(){
                         pagesCollection['pageData'][index].css('z-index', zIndexMax--);
                         $('.mainView').append(pagesCollection['pageData'][index]);
                         returnJsonData('listSpeakers', jsonArgs1).done(function(data){
-
                             // Define returnObject
                             returnObject = $(php_page_speakers);
 
                             // Build returnObject
-                            returnObject.find('.page-info h2').html(index);
+                            returnObject.find('.pageInfo h2').html(index);
 
                             // If there is data
                             if (!_.isEmpty(data)) {
@@ -184,20 +212,22 @@ function startUp(){
 
                                     _.each(value, function(val, k){
                                         switch(k){
-                                            case 'attachments':
+                                            case 'featuredImage':
                                                 if(_.isNull(val)){
                                                     returnSpeaker.find('.photo').remove();
                                                 } else {
-                                                    _.each(val, function(v, k) {
-                                                        returnSpeaker.find('.photo').find('img').attr('alt', value.first_name + ' ' + value.last_name);
-                                                        returnSpeaker.find('.photo').find('img').attr('src', v.thumb);
-                                                    });
+                                                    returnSpeaker.find('.photo').find('img').attr('alt', value.first_name + ' ' + value.last_name);
+                                                    returnSpeaker.find('.photo').find('img').attr('src', val);
                                                 }
-                                            break;
+                                                break;
+
+                                            case "the_content":
+                                                returnSpeaker.find('.' + k).html(_.unescape(val));
+                                                break;
 
                                             default:
                                                 returnSpeaker.find('.' + k).html(val);
-                                            break;
+                                                break;
                                         }
                                     });
 
@@ -207,27 +237,102 @@ function startUp(){
                             }
 
                             // Append returnObject
-                            $('#speakers').find('.container').append(returnObject)
+                            $('#' + index).find('.container').append(returnObject);
+
+                            // Speaker Bio toggle
+                            $('.bio-toggle').on('click', function(e) {
+                                e.preventDefault();
+
+                                $(this).next('.bio').slideToggle();
+                            });
+
+                            $('#' + index).find('.pageInfo').flowtype({
+                                minFont : 16,
+                                maxFont : 115,
+                            });
+
+                            $('#' + index).find('.all-speakers').flowtype({
+                                minFont : 16,
+                                maxFont : 20,
+                            });
+
+                            $('#' + index).removeClass('displayNone');
                         });
 
-                        $('#speakers').flowtype({
-                            minFont : 28,
-                            maxFont : 36
-                        });
                     break;
 
                     case "schedule":
                         pagesCollection['pageData'][index].attr('data-stellar-background-ratio', Math.random())
                         pagesCollection['pageData'][index].css('z-index', zIndexMax--);
                         $('.mainView').append(pagesCollection['pageData'][index]);
-                        returnJsonData('listSpeakers', jsonArgs1).done(function(data){
-                            // console.log(data)
+                        returnJsonData('listEvents', jsonArgs1).done(function(data) {
+                            debug0 = data;
+                            // define object    
+                            returnObject = $(php_page_section);
+                            returnEventsWrapper = $('<ul />');
+                            returnDivider = $('<div class="divider" />');
+                            returnEventDate = $('<h3 class="event-date" / >');
+
+                            // build object
+                            returnObject.find('.pageInfo h2').html(index);
+                            returnObject.find('.all-content').addClass(index);
+
+                            // build date from first item
+                            eventDate = moment.unix(data[0].event_start).format('MMM D, YYYY');
+                            returnEventDate.html(eventDate);
+
+                            returnObject.find('.all-content').append(returnEventDate);
+
+                            // Build events
+                            _.each(data, function(value, key) {
+                                returnEvent = $(php_event_item);
+                                _.each(value, function(val, k) {
+                                    switch(k) {
+                                        case "event_start":
+                                            startDate = moment.unix(val).format('h:mm A');
+                                            returnEvent.find('.' + k).html(startDate);
+                                            break;
+
+                                        case "the_title":
+                                            returnEvent.find('.' + k).html(_.unescape(val));
+                                            break;
+
+                                        default:
+                                            returnEvent.find('.' + k).html(val);
+                                            break;
+                                    }
+                                });
+                                returnEventsWrapper.append(returnEvent);
+                            });
+
+                            returnObject.find('.all-content').append(returnEventsWrapper);
+                            $('#' + index).find('.container').html(returnObject);
+                            $('#' + index).find('.container').append(returnDivider);
+
+                            // Set first item active
+                            $('.all-content').find('li:first-child').addClass('active');
+
+                            // Toggle Status/More info
+                            $('.event-toggle').on('click', function(e) {
+                                e.preventDefault();
+
+                                $('.all-content').find('li').removeClass('active');
+                                $(this).parent().addClass('active');
+                            });
+
+                            $('#' + index).find('.pageInfo').flowtype({
+                                minFont : 16,
+                                maxFont : 115,
+                            });
+
+                            $('#' + index).find('.all-content').flowtype({
+                                minFont : 16,
+                                maxFont : 40,
+                            });
+
+                            $('#' + index).removeClass('displayNone');
                         });
-                        $('#schedule').find('.container').append(index)
-                        $('#schedule').flowtype({
-                            minFont : 28,
-                            maxFont : 36
-                        });
+
                     break;
 
                     case "partners":
@@ -237,10 +342,10 @@ function startUp(){
                         returnJsonData('listPartnershipTypes', jsonArgs1).done(function(data) {
 
                             // // define object
-                            returnObject = $(php_page_partners);
+                            returnObject = $(php_page_section);
 
                             // // Build object
-                            returnObject.find('.page-info h2').html(index);
+                            returnObject.find('.pageInfo h2').html(index);
 
                             // // if data
                             if (!_.isEmpty(data)) {
@@ -251,12 +356,12 @@ function startUp(){
                                     returnSponsorType.attr('data-sponsorshipid', value.post_id);
                                     returnSponsorType.find('h3').html(value.the_title);
 
-                                    returnObject.find('.all-partners').append(returnSponsorType);
+                                    returnObject.find('.all-content').append(returnSponsorType);
                                 });
 
                             }
 
-                            // // Return individual sponsors
+                            // Return individual sponsors
                             returnJsonData('listPartners', jsonArgs1).done(function(partnersData) {
 
                                 // loop partners
@@ -267,34 +372,41 @@ function startUp(){
 
                                         _.each(value, function(val, k) {
                                             switch(k) {
-                                                 case "post_id":
+                                                case "post_id":
                                                     returnPartner.data('partnerid', val);
-                                                break;
+                                                    break;
+
                                                 case "attachments":
-                                                if (val != null) {
-                                                    _.each(val, function(l, m) {
-                                                        returnPartner.find('img').attr('src', l.thumb);
-                                                    })
-                                                }
-                                                break;
+                                                    if (val != null) {
+                                                        _.each(val, function(l, m) {
+                                                            returnPartner.find('img').attr('src', l.thumb);
+                                                        })
+                                                    }
+                                                    break;
                                             }
                                         });
                                         
-                                        $('.all-partners').find('div[data-sponsorshipid="'+ value.partnership_type +'"]').append(returnPartner);
+                                        $('.all-content').find('div[data-sponsorshipid="'+ value.partnership_type +'"] ul').append(returnPartner);
 
                                     });
 
                                 }
 
-                                console.log(partnersData);
-
                             });
 
-                            $('#partners').find('.container').append(returnObject);
-                        });
-                        $('#partners').flowtype({
-                            minFont : 28,
-                            maxFont : 36
+                            $('#' + index).find('.container').append(returnObject);
+
+                            $('#' + index).find('.pageInfo').flowtype({
+                                minFont : 16,
+                                maxFont : 115,
+                            });
+
+                            $('#' + index).find('.all-content').flowtype({
+                                minFont : 16,
+                                maxFont : 40,
+                            });
+
+                            $('#' + index).removeClass('displayNone');
                         });
                     break;
 
@@ -302,13 +414,30 @@ function startUp(){
                         pagesCollection['pageData'][index].attr('data-stellar-background-ratio', Math.random())
                         pagesCollection['pageData'][index].css('z-index', zIndexMax--);
                         $('.mainView').append(pagesCollection['pageData'][index]);
-                        returnJsonData('listSpeakers', jsonArgs1).done(function(data){
-                            //console.log(data)
-                        });
-                        $('#register').find('.container').append(index)
-                        $('#register').flowtype({
-                            minFont : 28,
-                            maxFont : 36
+                        
+                        // get page data
+                        returnPageData(index).done(function(data) {
+                            // define object
+                            returnObject = $(php_page_section);
+
+                            // build object
+                            returnObject.find('.pageInfo h2').html(index);
+                            returnObject.find('.all-content').addClass(index);
+                            returnObject.find('.all-content').html(_.unescape(data));
+
+                            $('#' + index).find('.container').html(returnObject);
+
+                            $('#' + index).find('.pageInfo').flowtype({
+                                minFont : 16,
+                                maxFont : 115,
+                            });
+
+                            $('#' + index).find('.all-content').flowtype({
+                                minFont : 16,
+                                maxFont : 40,
+                            });
+
+                            $('#' + index).removeClass('displayNone');
                         });
                     break;
 
@@ -322,7 +451,7 @@ function startUp(){
                             returnObject = $(php_page_sponsorship);
 
                             // build object
-                            returnObject.find('.page-info h2').html(index);
+                            returnObject.find('.pageInfo h2').html(index);
 
                             // if data
                             if (!_.isEmpty(data)) {
@@ -335,11 +464,19 @@ function startUp(){
                                         switch(k) {
                                             case "post_id":
                                                 returnSponsorship.data('sponsorshipid', val);
-                                            break;
+                                                break;
+
+                                            case "the_title":
+                                                returnSponsorship.find('.' + k).html(val + ': ');
+                                                break;
+
+                                            case "price":
+                                                returnSponsorship.find('.' + k).html('$' + val);
+                                                break;
 
                                             default:
                                                 returnSponsorship.find('.' + k).html(_.unescape(val));
-                                            break;
+                                                break;
                                         }
                                     });
 
@@ -348,12 +485,19 @@ function startUp(){
 
                             }
 
-                            console.log(data)
-                            $('#sponsorships').find('.container').append(returnObject)
-                        });
-                        $('#sponsorships').flowtype({
-                            minFont : 28,
-                            maxFont : 36
+                            $('#' + index).find('.container').append(returnObject)
+
+                            $('#' + index).find('.pageInfo').flowtype({
+                                minFont : 16,
+                                maxFont : 115,
+                            });
+
+                            $('#' + index).find('.all-sponsorship').flowtype({
+                                minFont : 16,
+                                maxFont : 115,
+                            });
+
+                            $('#' + index).removeClass('displayNone');
                         });
                     break;
 
@@ -505,6 +649,9 @@ function startUp(){
 
         $('section').append(mainViewObject);
 
+        // Append menu hover
+        menuHover('#menu-main-menu');
+
         $('.menu-main-menu-container, #logo').on('click', 'a', function(e){
             e.preventDefault();
             goToByScroll($(this).data('slide'));
@@ -515,8 +662,10 @@ function startUp(){
         $('.menuButton').on('click', function(){
             if($('.headerMenu').hasClass('showMenu')){
                 $('.headerMenu').removeClass('showMenu');
+                $('.headerMenu').find('#nav').slideUp();
             } else {
                 $('.headerMenu').addClass('showMenu');
+                $('.headerMenu').find('#nav').slideDown();
             }
         });
 
@@ -537,6 +686,14 @@ function startUp(){
         });
 
 
+    }
+
+// ADD HOVER MENU VIEW
+    function menuHover(target) {
+        // menuHover = php_menu_hover;
+        $(target).find('li').each(function() {
+            $(this).append(php_menu_hover);
+        });
     }
 
 // ADMIN
@@ -561,77 +718,77 @@ function startUp(){
     }
 
     // LOAD JQUERY UI SORTABLE
-        function loadSortable(target){
-            target.sortable();
-            target.disableSelection();
-            target.on( "sortstop", function( event, ui ) {
-                sortData = {};
-                $(this).children('li').each(function(){
-                    sortData[$(this).data('id')] = $(this).index();
-                });
-                var data = {
-                    action: 'update_sort',
-                    sort_data: sortData
-                };
-                $.post(ajaxurl, data, function(response) {
-                    console.log('Got this from the server: ' + response);
-                });                 
+    function loadSortable(target){
+        target.sortable();
+        target.disableSelection();
+        target.on( "sortstop", function( event, ui ) {
+            sortData = {};
+            $(this).children('li').each(function(){
+                sortData[$(this).data('id')] = $(this).index();
             });
-        }
+            var data = {
+                action: 'update_sort',
+                sort_data: sortData
+            };
+            $.post(ajaxurl, data, function(response) {
+                console.log('Got this from the server: ' + response);
+            });                 
+        });
+    }
 
     // ADD CONSOLE SUPPORT TO IE8
-        var method;
-        var noop = function () {};
-        var methods = [
-        'assert', 'clear', 'count', 'debug', 'dir', 'dirxml', 'error',
-        'exception', 'group', 'groupCollapsed', 'groupEnd', 'info', 'log',
-        'markTimeline', 'profile', 'profileEnd', 'table', 'time', 'timeEnd',
-        'timeStamp', 'trace', 'warn'
-        ];
-        var length = methods.length;
-        var console = (window.console = window.console || {});
-        while (length--) {
-            method = methods[length];
-            if (!console[method]) {
-                console[method] = noop;
-            }
+    var method;
+    var noop = function () {};
+    var methods = [
+    'assert', 'clear', 'count', 'debug', 'dir', 'dirxml', 'error',
+    'exception', 'group', 'groupCollapsed', 'groupEnd', 'info', 'log',
+    'markTimeline', 'profile', 'profileEnd', 'table', 'time', 'timeEnd',
+    'timeStamp', 'trace', 'warn'
+    ];
+    var length = methods.length;
+    var console = (window.console = window.console || {});
+    while (length--) {
+        method = methods[length];
+        if (!console[method]) {
+            console[method] = noop;
         }
+    }
 
 
     // ADD OBJECT.KEYS SUPPORT TO IE8
-        if (!Object.keys) {
-            Object.keys = (function () {
-                'use strict';
-                var hasOwnProperty = Object.prototype.hasOwnProperty,
-                hasDontEnumBug = !({toString: null}).propertyIsEnumerable('toString'),
-                dontEnums = [
-                'toString',
-                'toLocaleString',
-                'valueOf',
-                'hasOwnProperty',
-                'isPrototypeOf',
-                'propertyIsEnumerable',
-                'constructor'
-                ],
-                dontEnumsLength = dontEnums.length;
-                return function (obj) {
-                    if (typeof obj !== 'object' && (typeof obj !== 'function' || obj === null)) {
-                        throw new TypeError('Object.keys called on non-object');
+    if (!Object.keys) {
+        Object.keys = (function () {
+            'use strict';
+            var hasOwnProperty = Object.prototype.hasOwnProperty,
+            hasDontEnumBug = !({toString: null}).propertyIsEnumerable('toString'),
+            dontEnums = [
+            'toString',
+            'toLocaleString',
+            'valueOf',
+            'hasOwnProperty',
+            'isPrototypeOf',
+            'propertyIsEnumerable',
+            'constructor'
+            ],
+            dontEnumsLength = dontEnums.length;
+            return function (obj) {
+                if (typeof obj !== 'object' && (typeof obj !== 'function' || obj === null)) {
+                    throw new TypeError('Object.keys called on non-object');
+                }
+                var result = [], prop, i;
+                for (prop in obj) {
+                    if (hasOwnProperty.call(obj, prop)) {
+                        result.push(prop);
                     }
-                    var result = [], prop, i;
-                    for (prop in obj) {
-                        if (hasOwnProperty.call(obj, prop)) {
-                            result.push(prop);
+                }
+                if (hasDontEnumBug) {
+                    for (i = 0; i < dontEnumsLength; i++) {
+                        if (hasOwnProperty.call(obj, dontEnums[i])) {
+                            result.push(dontEnums[i]);
                         }
                     }
-                    if (hasDontEnumBug) {
-                        for (i = 0; i < dontEnumsLength; i++) {
-                            if (hasOwnProperty.call(obj, dontEnums[i])) {
-                                result.push(dontEnums[i]);
-                            }
-                        }
-                    }
-                    return result;
-                };
-            }());
-        }
+                }
+                return result;
+            };
+        }());
+    }

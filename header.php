@@ -5,7 +5,7 @@
 <!--[if gt IE 8]><!--><html class="no-js"><!--<![endif]-->
 	<head>
 		<meta name="fragment" content="!">
-		<title>One Page</title>
+		<title><?php bloginfo('name'); ?></title>
 		<?php wp_head(); ?>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale = 1.0, user-scalable = no">

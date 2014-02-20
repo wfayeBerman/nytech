@@ -2,24 +2,6 @@
 @import url('grid.less');
 @import url('mixins.less');
 
-@maxWidth: 1440px;
-
-@media0: ~"(min-width: 1440px)";
-@media0_: ~"(max-width: 1439px)";
-
-@media1: ~"(min-width: 1200px)";
-@media1_: ~"(max-width: 1199px)";
-
-@media2: ~"(min-width: 960px)";
-@media2_: ~"(max-width: 959px)";
-
-@media3: ~"(min-width: 720px)";
-@media3_: ~"(max-width: 719px)";
-
-@media4: ~"(min-width: 480px)";
-@media4_: ~"(max-width: 479px)";
-
-
 .border-radius(@radius) {
   -webkit-border-radius: @radius;
      -moz-border-radius: @radius;
@@ -60,23 +42,130 @@
 	-o-background-size: 0; /* Hide for Opera. Does *NOT* work (in newer Opera's). Needs hack below :( */
 }
 
+.background-size(@size: cover) {
+	-webkit-background-size: @size;
+	-moz-background-size: @size;
+	-o-background-size: @size;
+	background-size: @size;
+}
+
+/* Widths */
+@maxWidth: 1440px;
+@defaultWidth: 1150px;
+
+/* Media Queries */
+@media0: ~"(min-width: 1440px)";
+@media0_: ~"(max-width: 1439px)";
+
+@media1: ~"(min-width: 1200px)";
+@media1_: ~"(max-width: 1199px)";
+
+@media2: ~"(min-width: 960px)";
+@media2_: ~"(max-width: 959px)";
+
+@media3: ~"(min-width: 720px)";
+@media3_: ~"(max-width: 719px)";
+
+@media4: ~"(min-width: 480px)";
+@media4_: ~"(max-width: 479px)";@maxWidth: 1440px;
+
+@media0: ~"(min-width: 1440px)";
+@media0_: ~"(max-width: 1439px)";
+
+@media1: ~"(min-width: 1200px)";
+@media1_: ~"(max-width: 1199px)";
+
+@media2: ~"(min-width: 960px)";
+@media2_: ~"(max-width: 959px)";
+
+@media3: ~"(min-width: 720px)";
+@media3_: ~"(max-width: 719px)";
+
+@media4: ~"(min-width: 480px)";
+@media4_: ~"(max-width: 479px)";
+
+/* Colors */
+@red: rgb(237, 28, 36);
+@pink: #ec008c;
+@orange: rgb(223, 74, 50);
+
 @black: rgb(0, 0, 0);
-@white: rgb(255, 255, 255);
-@greyDarker: rgb(54, 54, 54);
+@greyDarkest: rgb(37, 37, 37);
+@greyDarker: rgb(59, 59, 59);
 @greyDark: rgb(70, 70, 70);
 @greyMid: rgb(87, 87, 87);
+@grey1: rgb(119, 119, 119);
 @grey: rgb(125, 125, 125);
 @greyLight: rgb(146, 146, 146);
+@greyLightMid1: rgb(183, 183, 183);
 @greyLightMid: rgb(194, 194, 194);
 @greyLighter: rgb(206, 206, 206);
 @greyLightest: rgb(214, 214, 214);
+@greyLightester: rgb(235, 235, 235);
+@white: rgb(255, 255, 255);
+
+/* Fonts */
+@fontSerif: "ltc-bodoni-175",serif;
+@fontSans: "proxima-nova",sans-serif;
+@fontLight: 100;
+@fontNormal: 500;
+@fontBold: 700;
+@fontExtraBold: 800;
+
+/* Mixings */
+.font-size(@fallback: 14px, @rem: 1.4rem) {
+	font-size: @fallback;
+	font-size: @rem;
+}
+.centerContent() {
+	max-width: @maxWidth;
+    margin: 0px auto;
+
+	@media only screen and @media0 {
+		    margin: 0px auto;
+			width: @defaultWidth;
+			position: relative;
+		}
+
+		@media only screen and @media1 and @media0_{
+		    margin: 0px auto;
+			width: 80%;
+			position: relative;
+		}
+
+		@media only screen and @media2 and @media1_{
+		    margin: 0px auto;
+			width: 80%;
+			position: relative;
+		}
+
+		@media only screen and @media3 and @media2_{
+		    margin: 0px auto;
+			width: 80%;
+			position: relative;
+		}
+
+		@media only screen and @media4 and @media3_{
+		    margin: 0px auto;
+			width: 90%;
+			position: relative;
+		}
+
+		@media only screen and @media4_{
+		    margin: 0px auto;
+			width: 90%;
+			position: relative;
+		}
+}
 
 /* Global */
-
-body {
-	font-family: "proxima-nova";
-	font-weight: 400;
+html {
 	font-size: 62.5%;
+}
+body {
+	font-family: @fontSans;
+//	.font-size();
+	font-weight: 400;
 	color: @grey;
 	background-color: @greyLightest;
 }
@@ -95,92 +184,194 @@ a:visited {
 	color: @greyDarker;
 	text-decoration: none;
 }
-h2{
-	font-size: 2em;
-
+h2 {
+	font-size: 2.1em;
+	.inlineBlocker;
 	color: #666; /* fallback color */
-//	.horizontal-gradient(@black, @white);
-//	background: url(http://cloud.bermangrp.com/web/clients/cssmask/images/nyc.png) repeat 0 0, white; /* select text image and fallback background color */
+	.horizontal-gradient(@red, @white);
+	// background: url(http://cloud.bermangrp.com/web/clients/cssmask/images/nyc.png) repeat 0 0, white; /* select text image and fallback background color */
 	.textMask;
-
 }
 
 /* Navigation */
 
 .menuButton{
+	background: url('../images/graphics/mobile-button.jpg');
+	background: url('../images/graphics/mobile-button.jpg');
+	width: 22px;
+	display: none;
+	height: 22px;
+	text-indent: -9999px;
 	position: absolute;
-	left: 100%;
-	top: 0px;
-	z-index: 400;
-	padding: 1px 10px 3px;
-	font-size: 36px;
-	background-color: @white;
-	background-color: rgba(255, 255, 255, 0.8);
+	right: 0px;
+	cursor: pointer;
+	display: none;
+
 	@media only screen and @media3_{
 		display: block;
 	}
-	&:hover{
-		cursor: pointer;
-		background-color: @white;
-	}
-	display: none;
+	// &:hover{
+	// 	cursor: pointer;
+	// 	background-color: @white;
+	// }
+	
 }
 
-.showMenu{
-	left: 1% !important;
-}
+// .showMenu{
+// 	left: 1% !important;
+// }
 
 .headerMenu {
 	position:fixed;
-	top:0px;
-	left: 1%;
-	width:160px; 
-	height:100%; 
-	background-color: @black;
-	background-color: rgba(0, 0, 0, 0.8);
-	z-index:400;
+	top: 25px;
+	width: 100%;  
+	background-color: @white;
+	z-index: 400;
 	.box-sizing(border-box);
-	padding: 20px;
-	#logo {
-		text-align: center;
-		.box-shadow(0px 0px 1px 2px @greyLight);
-		img{
+	padding: 12px;
+	box-shadow: 0px 1px 1px @greyDarker;
 
+	@media only screen and @media3_{
+		top: 0px;
+	}
+
+
+	.centerContent {
+		.centerContent();
+	}
+	
+	#logo {
+		width: 130px;
+		height: 80px;
+		.inlineBlocker();
+		overflow: hidden;
+
+		@media only screen and @media3 and @media2_{
+		    width: 90px;
+			height: 46px;
+			margin-right: 50px;
+		}
+
+		@media only screen and @media3_{
+			width: 55px;
+			height: 27px;
 		}
 	}
 	#nav {
-		text-align: right;
-		margin: 30px 0 0 0;
+		.inlineBlocker();
+		float: right;
+
+		@media only screen and @media3 and @media2_{
+		    float: none;
+		}
+		
+		@media only screen and @media3_{
+			float: none;
+			display: none;
+			position: absolute;
+			top: 20px;
+			height: auto;
+			right: -12px;
+			padding-top: 24px;
+			min-width: 170px;
+		}
+
 		ul{
 			padding: 0px;
+			margin: 0px;
 			list-style-type: none;
-			li{
-				a{
+			font-size: 0;
+
+			@media only screen and @media3_{
+				background-color: @white;
+				border-top: 3px solid @red;
+
+				&:before {
+					content: "";
 					display: block;
-					color: @grey;
+					position: absolute;
+					top: 14px;
+					right: 18px;
+					width: 0;
+					height: 0;
+					border-style: solid;
+					border-width: 0 5px 10px 5px;
+					border-color: transparent transparent @red transparent;
+
+				}
+			}
+
+			li{
+				.inlineBlocker();
+				position: relative;
+
+				@media only screen and @media3_{
+					display: block;
+				}
+				&:hover {
+					.menu-hover {
+						display: block;
+					}
+				}
+
+				.menu-hover {
+					width: 75px;
+					height: 75px;
+					background: url('../images/graphics/menu-hover.jpg');
+					position: absolute;
+					top: 0px;
+					left: 50%;
+					margin-left: -38px;
+					z-index: -1;
+					border-radius: 40px;
+					opacity: 0.35;
+					display: none;
+
+					@media only screen and @media3_{
+						display: none !important;
+					}
+
+					div {
+						background-color: #FFF;
+						width: 38px;
+						height: 38px;
+						margin-left: 19px;
+						margin-top: 19px;
+						border-radius: 30px;
+					}
+				}
+				a {
+					display: block;
+					color: @greyDarkest;
 					text-transform: uppercase;
-					padding: 10px 0px;
-					font-size: 1.5em;
-					&:hover{
-						color: @greyDark;
+					padding: 30px 20px;
+					.font-size(15px, 1.5rem);
+
+					@media only screen and @media2 and @media1_{
+					    padding: 30px 10px;
+					}
+
+					@media only screen and @media3 and @media2_{
+					    padding: 16px 8px;
+					    .font-size(14px, 1.4rem);
+					}
+
+					@media only screen and @media3_{
+						color: @greyMid;
+						padding: 10px 8px;
+						padding-left: 30px;
+						border-bottom: 1px solid @red;
+					    .font-size(14px, 1.4rem);
+
+					    &:hover {
+					    	color: @red;
+					    }
 					}
 				}
 			}
 		}
 	}
-
-	@media only screen and @media4 and @media3_{
-		left: -160px;
-	}
-
-	@media only screen and @media4_{
-		left: -160px;
-	}
-
-	.transition;
-
 }
-
 
 /* General Slides */ 
 
@@ -190,16 +381,16 @@ h2{
 	height:auto;
 	position: relative;
 	padding:140px 0;
-	.box-shadow(0px 3px 10px @greyLight);
+	// .box-shadow(0px 3px 10px @greyLight);
 
 	.container{
 	    max-width: @maxWidth;
 	    margin: 0px auto;
-		width: 70%;
+		width: @defaultWidth;
 
 		@media only screen and @media0 {
 		    margin: 0px auto;
-			width: 70%;
+			width: @defaultWidth;
 		}
 
 		@media only screen and @media1 and @media0_{
@@ -213,8 +404,8 @@ h2{
 		}
 
 		@media only screen and @media3 and @media2_{
-		    margin: 0px auto 0px 24%;
-			width: 70%;
+		    margin: 0px auto;
+			width: 80%;
 		}
 
 		@media only screen and @media4 and @media3_{
@@ -231,23 +422,369 @@ h2{
 
 }
 
-#sample-page{
-//	background-image: url('http://174.136.12.85/~retech/wp-content/themes/retech/images/graphics/backer1.jpg');
-	.gradient(@white, @grey);
-	color: @greyDarker;
-	.box-shadow(0px 3px 10px @black);
-	.container{
-		width: 76%;
-		margin-left: 20%;
-		@media only screen and @media4_{
-			width: 100%;
-			margin-left: 0%;
+/* Headings */
+.pageInfo {
+
+	h2 {
+		line-height: 1;
+		text-transform: uppercase;
+		font-style: italic;
+		font-weight: @fontExtraBold;
+		.inlineBlocker;
+		width: 100%;
+//		margin-bottom: 74px;
+	}
+}
+
+#home {
+	background-image: url('http://192.185.4.131/~nytech/wp-content/themes/nytech/images/graphics/default-bg.jpg');
+	background-position: top center !important;
+	background-repeat: repeat;
+	color: @white;
+	.box-sizing(border-box);
+	font-family: @fontSerif;
+	padding: 190px 0px 90px;
+	.transition;
+	border-bottom: 1px solid @white;
+
+	@media only screen and @media3 and @media2_{
+		padding: 190px 0 40px;
+	}
+
+	@media only screen and @media3_ {
+		padding: 100px 0 40px;
+	}
+
+	h3 {
+		line-height: 1.45;
+		margin: 0px;
+		text-transform: uppercase;
+		font-weight: @fontLight;
+		font-size: 2.4em;
+	}
+
+	h4 {
+		line-height: 1.45;
+		margin: 0px;
+		text-transform: uppercase;
+		font-weight: @fontLight;
+		font-size: 1.6em;
+	}
+}
+
+.displayNone{
+	visibility: hidden;
+}
+
+#overview {
+	background-color: @greyDarkest;
+	color: @white;
+	padding: 140px 0px 130px;
+
+	.pageInfo {
+
+		h2 {
+			margin-bottom: 0.2em;
+			font-size: 3em;
+			color: #666; /* fallback color */
+			.horizontal-gradient(blue, @white);
+			background: url('http://192.185.4.131/~nytech/wp-content/themes/nytech/images/graphics/overview-heading.jpg') repeat 0 0, white; /* select text image and fallback background color */
+			.textMask;
+		}
+	}
+
+	.all-content {
+		p{
+			font-size: 1em;
+			line-height: 1.4;
+		}
+	}
+	h3 {
+		font-size: 2.1em;
+		line-height: 1;
+		text-transform: uppercase;
+		font-style: italic;
+		font-weight: @fontBold;
+		.inlineBlocker;
+		width: 100%;
+		text-shadow: 10px 0px 0px @greyDark;
+	}
+}
+
+#speakers {
+	background-color: @greyLightester;
+	color: @greyDark;
+	padding: 140px 0px 130px;
+
+	.pageInfo {
+
+		h2 {
+			margin-bottom: 0.2em;
+			font-size: 3em;
+			color: #666; /* fallback color */
+			.horizontal-gradient(@greyLightester, @white);
+			background: url('http://192.185.4.131/~nytech/wp-content/themes/nytech/images/graphics/speakers-heading.jpg') repeat 0 0, white; /* select text image and fallback background color */
+			.textMask;
+		}
+	}
+
+	.all-speakers {
+		margin-top: 50px;
+
+		.speaker {
+			.inlineBlocker;
+			max-width: 170px;
+			min-height: 285px;
+			margin: 0px 25px;
+			text-transform: uppercase;
+
+			.photo {
+				height: 200px;
+				margin-bottom: 10px;
+
+				img {
+					width: 100%;
+					height: 100%;
+				}
+			}
+			.full-name {
+				color: @orange;
+				font-weight: @fontNormal;
+				font-size: 1em;
+				line-height: 1.4;
+			}
+			.work_title {
+				color: @greyLight;
+				font-weight: @fontLight;
+				font-size: 1em;
+				line-height: 1.4;
+			}
+			.company {
+				color: @greyDarker;
+				font-size: 1em;
+				line-height: 1.4;
+			}
+			.bio {
+				display: none;
+
+				.bio-wrapper {
+					min-width: 625px;
+				}
+			}
 		}
 	}
 }
 
+#schedule {
+	background-color: @greyMid;
+	color: @greyLightMid1;
+	padding: 140px 0px 130px;
+	font-weight: @fontNormal;
 
-#overview{
-	background-color: @greyDarker;
+	.pageInfo {
+
+		h2 {
+			margin-bottom: 0.5em;
+			font-size: 3em;
+			color: @pink; /* fallback color */
+			.horizontal-gradient(@greyMid, @white);
+			background: url('http://192.185.4.131/~nytech/wp-content/themes/nytech/images/graphics/heading-schedule.jpg') repeat 0 0, white; /* select text image and fallback background color */
+			.textMask;
+		}
+	}
+
+	.all-content {
+		position: relative;
+
+		.event-date {
+			color: @white;
+			line-height: 1;
+			font-style: italic;
+			font-weight: @fontBold;
+			text-shadow: 10px 0px 0px @grey1;
+			margin: 0px 0px 80px;
+			font-size: 2.1em;
+		}
+
+		ul {
+			margin: 0px;
+			padding: 0px;
+
+			li {
+				list-style: none;
+
+				&.active {
+					a {
+						color: @white;
+					}
+					.status {
+						background-color: @white;
+					}
+				}
+
+				a {
+					color: @greyLightMid1;
+				}
+
+				div {
+					.inlineBlocker(middle);
+
+					&.event_start {
+						min-width: 100px;
+						text-align: right;
+						padding-right: 40px;
+					}
+					&.status {
+						background-color: @pink;
+						width: 12px;
+						height: 12px;
+						.border-radius(10px);
+						margin-right: 35px;
+					}
+				}
+			}
+		}
+	}
 }
 
+#partners {
+	background-color: @white;
+	color: @greyMid;
+	padding: 140px 0px 130px;
+	font-weight: @fontNormal;
+
+	.pageInfo {
+
+		h2 {
+			margin-bottom: 0.5em;
+			font-size: 3em;
+			color: #0072bc; /* fallback color */
+			.horizontal-gradient(@white, @white);
+			background: url('http://192.185.4.131/~nytech/wp-content/themes/nytech/images/graphics/heading-partners.jpg') repeat 0 0, white; /* select text image and fallback background color */
+			.textMask;
+		}
+	}
+
+	.all-content {
+		text-transform: uppercase;
+
+		.the_title {
+			line-height: 1;
+			font-style: italic;
+			font-weight: @fontBold;
+			text-shadow: 6px 0px 0px @greyLightest;
+			margin: 0px;
+			font-size: 2.1em;
+		}
+
+		ul {
+			margin: 40px 0px;
+			padding: 0px;
+
+			li {
+				list-style: none;
+				.inlineBlocker;
+				margin: 0px 20px;
+				min-width: 150px;
+			}
+		}
+	}
+}
+
+#register {
+	background-color: @greyDarkest;
+	color: @white;
+	padding: 140px 0px 130px;
+	font-weight: @fontNormal;
+
+	.pageInfo {
+
+		h2 {
+			margin-bottom: 0.5em;
+			font-size: 3em;
+			color: @red; /* fallback color */
+			.horizontal-gradient(@greyDarkest, @white);
+			background: url('http://192.185.4.131/~nytech/wp-content/themes/nytech/images/graphics/heading-register.jpg') repeat 0 0, white; /* select text image and fallback background color */
+			.textMask;
+		}
+	}
+
+	.all-content {
+		text-transform: uppercase;
+
+		ul {
+			margin: 0px;
+			padding: 0px;
+
+			li {
+				list-style: none;
+
+				a {
+					color: @red;
+				}
+			}
+		}
+	}
+}
+
+#sponsorships {
+	background-color: @greyLightester;
+	color: @greyDark;
+	padding: 140px 0px 130px;
+	font-weight: @fontLight;
+
+	.pageInfo {
+
+		h2 {
+			margin-bottom: 0.5em;
+			font-size: 2.2em;
+			color: @pink; /* fallback color */
+			.horizontal-gradient(@greyLightester, @white);
+			background: url('http://192.185.4.131/~nytech/wp-content/themes/nytech/images/graphics/heading-sponsorship.jpg') repeat 0 0, white; /* select text image and fallback background color */
+			.textMask;
+		}
+	}
+
+	.all-sponsorship {
+		p{
+			font-size: 1em;
+			line-height: 1.4;
+		}
+	}
+
+	.heading {
+		color: @greyMid;
+		line-height: 1;
+		text-transform: uppercase;
+		font-style: italic;
+		font-weight: @fontBold;
+		width: 100%;
+		text-shadow: 6px 0px 0px @greyLightest;
+
+		.the_title {
+			.inlineBlocker;
+			margin: 0px;
+			font-size: 2.1em;
+		}
+		.price {
+			.inlineBlocker;
+			margin: 0px;
+			font-size: 2.1em;
+		}
+	}
+}
+
+// #sample-page{
+// //	background-image: url('http://174.136.12.85/~retech/wp-content/themes/retech/images/graphics/backer1.jpg');
+// 	.gradient(@white, @grey);
+// 	color: @greyDarker;
+// 	.box-shadow(0px 3px 10px @black);
+// 	.container{
+// 		width: 76%;
+// 		margin-left: 20%;
+// 		@media only screen and @media4_{
+// 			width: 100%;
+// 			margin-left: 0%;
+// 		}
+// 	}
+// }

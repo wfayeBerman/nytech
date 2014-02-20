@@ -27,6 +27,9 @@
     	wp_register_script('spectrum', get_template_directory_uri() . '/machines/libraries/spectrum/spectrum.js', array('jquery'), '1.0', false );
     	wp_enqueue_script('spectrum');
 
+    	wp_register_script('backstretch', get_template_directory_uri() . '/machines/libraries/backstretch/jquery.backstretch.min.js', '', '1.0', false );
+    	wp_enqueue_script('backstretch');
+
     	wp_register_script('dynamics', get_template_directory_uri() . '/machines/dynamics.js', array('timepicker'), '1.0', false );
     	wp_enqueue_script('dynamics');
 
@@ -158,11 +161,19 @@
 		foreach ($loop->posts as $key => $postValue) {
 			$attachmentArray = getAttachmentArray($postValue->ID);
 
+			if (has_post_thumbnail( $postValue->ID ) ){
+				$featuredImageArray = wp_get_attachment_image_src( get_post_thumbnail_id( $postValue->ID ), 'single-post-thumbnail' );
+				$featuredImageURL = $featuredImageArray[0];
+			} else {
+				$featuredImageURL = null;
+			}
+
 			$array = array(
 				"post_id" => $postValue->ID,
 				"the_title" => htmlspecialchars(get_the_title($postValue->ID), ENT_QUOTES),
 				"the_content" => htmlspecialchars(get_post_field('post_content', $postValue->ID), ENT_QUOTES),
-				"attachments" => $attachmentArray
+				"attachments" => $attachmentArray,
+				"featuredImage" => $featuredImageURL
 			);
 
 			if(!is_null($taxonomyData)){
