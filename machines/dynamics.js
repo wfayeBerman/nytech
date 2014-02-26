@@ -3,11 +3,11 @@ var $ = jQuery;
 var pageDir;
 var pageID;
 var defaultPage = 'home';
-var RewriteBase = "/~nytech/"; // if url is http://171.321.43.24/~foobar/ then the value should equal /~foobar/
+var RewriteBase = "/"; // if url is http://171.321.43.24/~foobar/ then the value should equal /~foobar/
 var urlArray = window.location.pathname.replace(RewriteBase, '');
 urlArray = urlArray.split("/");
 var urlQueryString = "?" + Math.floor((Math.random()*10000)+1);
-var defaultPageDir = "http://192.185.4.131/~nytech/wp-content/themes/nytech";
+var defaultPageDir = "http://www.nytechforum.com/wp-content/themes/nytech";
 var filesToVariablesArray = [
     {'text_input': 'views/input_text.php'},
     {'mainView': 'views/mainView.php'},
@@ -15,8 +15,10 @@ var filesToVariablesArray = [
     {'sticky_side': 'views/output_sticky_side.php'},
     {'person_item': 'views/output_person_item.php'},
     {'event_item': 'views/output_event.php'},
+    {'event_info': 'views/output_event_info.php'},
     {'page_speakers': 'views/page_speakers.php'},
     {'output_speaker': 'views/output_speaker.php'},
+    {'output_speaker_bio': 'views/output_speaker_bio.php'},
     {'page_partners': 'views/page_partners.php'},
     {'output_partners': 'views/output_partners.php'},
     {'output_list_image': 'views/output_list_image.php'},
@@ -150,7 +152,7 @@ function startUp(){
                 // Flowtype
                 $('#home').flowtype({
                     minFont : 21,
-                    maxFont : 80
+                    maxFont : 50
                 });
                  $('#home').removeClass('displayNone');
 
@@ -175,6 +177,37 @@ function startUp(){
 
                             $('#' + index).find('.container').html(returnObject);
 
+                            // Return Influencers Data
+                            returnJsonData('listInfluencers', jsonArgs1).done(function(jsonData) {
+                                // debug0 = jsonData;
+
+                                returnInfluencersWrapper = $('<ul class="influencers" />');
+
+                                _.each(jsonData, function(value, key) {
+                                    returnInfluencersItem = $('<li />');
+                                    returnInfluencersContainer = $('<div />');
+                                    returnInfluencersImg = $('<img />');
+                                    returnInfluencersImgDark = $('<img class="dark" />');
+
+                                    // get dark image
+                                    darkImg = value.featuredImage.split('.png');
+                                    returnInfluencersImgDark.attr('src', darkImg[0] + '_dark.png');
+
+                                    returnInfluencersImg.attr('src', value.featuredImage);
+                                    returnInfluencersContainer.append(returnInfluencersImg);
+                                    returnInfluencersContainer.append(returnInfluencersImgDark);
+                                    returnInfluencersContainer.append(_.unescape(value.the_title));
+                                    returnInfluencersItem.append(returnInfluencersContainer);
+
+                                    returnInfluencersWrapper.append(returnInfluencersItem);
+                                });
+
+                                $('#' + index).find('.all-content').find('h3:contains(major topics)').before(returnInfluencersWrapper);
+
+                                // alternate classes
+                                $('#' + index).find('.all-content ul.influencers').find('li:odd').addClass('alternate');
+                            });
+
                             $('#' + index).find('.pageInfo').flowtype({
                                 minFont : 16,
                                 maxFont : 115,
@@ -182,7 +215,7 @@ function startUp(){
 
                             $('#' + index).find('.all-content').flowtype({
                                 minFont : 16,
-                                maxFont : 115,
+                                maxFont : 22,
                             });
 
                             $('#' + index).removeClass('displayNone');
@@ -196,62 +229,126 @@ function startUp(){
                         pagesCollection['pageData'][index].attr('data-stellar-background-ratio', Math.random())
                         pagesCollection['pageData'][index].css('z-index', zIndexMax--);
                         $('.mainView').append(pagesCollection['pageData'][index]);
-                        returnJsonData('listSpeakers', jsonArgs1).done(function(data){
-                            // Define returnObject
-                            returnObject = $(php_page_speakers);
+                        
+                        returnJsonData('listSpeakers_type').done(function(speakersTypeData) {
+                            // Define returnSpeakerObject
+                            returnSpeakerObject = $(php_page_section);
 
-                            // Build returnObject
-                            returnObject.find('.pageInfo h2').html(index);
+                            // Build returnSpeakerObject
+                            returnSpeakerObject.find('.pageInfo h2').html(index);
+                            returnSpeakerObject.find('.all-content').addClass(index);
 
-                            // If there is data
-                            if (!_.isEmpty(data)) {
+                            // Return speakers
+                            returnJsonData('listSpeakers').done(function(data){
+                                // loop speaker types
+                                _.each(speakersTypeData, function(value, key) {
+                                    speakersTypeWrapper = $('<div>');
+                                    speakersTypeTitle = $('<h3 class="speakerTypeTitle" />');
 
-                                // Loop though speakers
-                                _.each(data, function(value, key) {
-                                    returnSpeaker = $(php_output_speaker);
+                                    speakersTypeTitle.html(value.the_title);
+                                    speakersTypeWrapper.addClass(slugify(value.the_title));
+                                    speakersTypeWrapper.html(speakersTypeTitle);
 
-                                    _.each(value, function(val, k){
-                                        switch(k){
-                                            case 'featuredImage':
-                                                if(_.isNull(val)){
-                                                    returnSpeaker.find('.photo').remove();
-                                                } else {
-                                                    returnSpeaker.find('.photo').find('img').attr('alt', value.first_name + ' ' + value.last_name);
-                                                    returnSpeaker.find('.photo').find('img').attr('src', val);
-                                                }
-                                                break;
+                                    _.each(data, function(value1, key1) {
+                                        returnSpeaker = $(php_output_speaker);
+                                        returnSpeaker.data('speakerid', value1.post_id);
 
-                                            case "the_content":
-                                                returnSpeaker.find('.' + k).html(_.unescape(val));
-                                                break;
+                                        _.each(value1, function(val, k) {
+                                            switch(k){
+                                                case 'featuredImage':
+                                                    if(_.isNull(val)){
+                                                        returnSpeaker.find('.photo').remove();
+                                                    } else {
+                                                        returnSpeaker.find('.photo').find('img').attr('alt', value1.first_name + ' ' + value1.last_name);
+                                                        returnSpeaker.find('.photo').find('img').attr('src', val);
+                                                    }
+                                                    break;
 
-                                            default:
-                                                returnSpeaker.find('.' + k).html(val);
-                                                break;
+                                                default:
+                                                    returnSpeaker.find('.' + k).html(val);
+                                                    break;
+                                            }
+                                        });
+
+                                        if (value.post_id == value1.speaker_type) {
+                                            speakersTypeWrapper.find('.speakerTypeTitle').after(returnSpeaker);
+                                            returnSpeakerObject.find('.all-content').prepend(speakersTypeWrapper);
                                         }
                                     });
-
-                                    returnObject.find('.all-speakers').append(returnSpeaker);
                                 });
 
-                            }
-
-                            // Append returnObject
-                            $('#' + index).find('.container').append(returnObject);
-
+                                // init Shadowbox
+                            Shadowbox.init({
+                                skipSetup: true
+                            });
                             // Speaker Bio toggle
                             $('.bio-toggle').on('click', function(e) {
                                 e.preventDefault();
 
-                                $(this).next('.bio').slideToggle();
+                                speakerID = $(this).parent().data('speakerid');
+
+                                // Open bio with Shadowbox
+                                Shadowbox.open({
+                                    content: '<div class="speaker-popup" />',
+                                    player: 'html',
+                                    width: 800,
+                                    height: 600,
+                                    options: {
+                                        onFinish: function() {
+                                            returnSpeakerBio = $(php_output_speaker_bio);
+
+                                            _.each(data, function(value, key) {
+                                                if (value.post_id == speakerID) {
+                                                    _.each(value, function(val, k) {
+                                                        switch(k) {
+                                                            case 'featuredImage':
+                                                                if(_.isNull(val)){
+                                                                    returnSpeakerBio.find('.photo').remove();
+                                                                } else {
+                                                                    returnSpeakerBio.find('.photo').find('img').attr('alt', value.first_name + ' ' + value.last_name);
+                                                                    returnSpeakerBio.find('.photo').find('img').attr('src', val);
+                                                                }
+                                                                break;
+
+                                                            case 'the_content':
+                                                                returnSpeakerBio.find('.' + k).html(_.unescape(val));
+                                                                break;
+
+                                                            default:
+                                                                returnSpeakerBio.find('.' + k).html(val);
+                                                                break;
+                                                        }
+
+                                                        // Append speaker to popup
+                                                        $('.speaker-popup').html(returnSpeakerBio);
+                                                    });
+                                                }
+                                            });
+                                        },
+                                        // onFinish: function() {
+                                        //     console.log('finish');
+                                        // }
+                                    }
+                                });
                             });
+                            });
+
+                            // Get Page Data
+                            returnPageData(index).done(function(pageData) {
+                                pageDataWraper = $('<div class="more" />');
+                                pageDataWraper.html(_.unescape(pageData))
+                                returnSpeakerObject.find('.all-content').append(pageDataWraper);
+                            });
+
+                            // Append returnSpeakerObject
+                            $('#' + index).find('.container').html(returnSpeakerObject);
 
                             $('#' + index).find('.pageInfo').flowtype({
                                 minFont : 16,
                                 maxFont : 115,
                             });
 
-                            $('#' + index).find('.all-speakers').flowtype({
+                            $('#' + index).find('.all-content').flowtype({
                                 minFont : 16,
                                 maxFont : 20,
                             });
@@ -266,19 +363,20 @@ function startUp(){
                         pagesCollection['pageData'][index].css('z-index', zIndexMax--);
                         $('.mainView').append(pagesCollection['pageData'][index]);
                         returnJsonData('listEvents', jsonArgs1).done(function(data) {
-                            debug0 = data;
+                            // debug0 = data;
                             // define object    
                             returnObject = $(php_page_section);
                             returnEventsWrapper = $('<ul />');
                             returnDivider = $('<div class="divider" />');
                             returnEventDate = $('<h3 class="event-date" / >');
+                            returnEventInfo = $(php_event_info);
 
                             // build object
                             returnObject.find('.pageInfo h2').html(index);
                             returnObject.find('.all-content').addClass(index);
 
                             // build date from first item
-                            eventDate = moment.unix(data[0].event_start).format('MMM D, YYYY');
+                            eventDate = moment.unix(data[0].event_start).format('dddd, MMM D, YYYY');
                             returnEventDate.html(eventDate);
 
                             returnObject.find('.all-content').append(returnEventDate);
@@ -286,6 +384,8 @@ function startUp(){
                             // Build events
                             _.each(data, function(value, key) {
                                 returnEvent = $(php_event_item);
+                                returnEvent.find('.event-toggle').data('eventid', value.post_id);
+
                                 _.each(value, function(val, k) {
                                     switch(k) {
                                         case "event_start":
@@ -297,6 +397,10 @@ function startUp(){
                                             returnEvent.find('.' + k).html(_.unescape(val));
                                             break;
 
+                                        case "the_content":
+                                            returnEvent.find('.' + k).html(_.unescape(val));
+                                            break;
+
                                         default:
                                             returnEvent.find('.' + k).html(val);
                                             break;
@@ -305,19 +409,98 @@ function startUp(){
                                 returnEventsWrapper.append(returnEvent);
                             });
 
+                            // Populate info box from first event
+                            firstEvent = _.first(data);
+                            _.each(firstEvent, function(value, key) {
+                                switch(key) {
+                                    case "event_start":
+                                        startDate = moment.unix(value).format('h:mm A');
+                                        returnEventInfo.find('.' + key).html(startDate);
+                                        break;
+
+                                    case "event_end":
+                                        endDate = moment.unix(value).format('h:mm A');
+                                        returnEventInfo.find('.' + key).html(endDate);
+                                        break;
+
+                                    case "the_title":
+                                        returnEventInfo.find('.' + key).html(_.unescape(value));
+                                        break;
+
+                                    case "the_content":
+                                        returnEventInfo.find('.' + key).html(_.unescape(value));
+                                        break;
+                                    default:
+                                        returnEventInfo.find('.' + key).html(value);
+                                        break;
+                                }
+                            });
+
                             returnObject.find('.all-content').append(returnEventsWrapper);
+                            returnObject.find('.all-content').append(returnEventInfo);
+
                             $('#' + index).find('.container').html(returnObject);
-                            $('#' + index).find('.container').append(returnDivider);
+                            // $('#' + index).find('.container').append(returnDivider);
 
                             // Set first item active
-                            $('.all-content').find('li:first-child').addClass('active');
+                            $('#' + index).find('.all-content').find('li:first-child').addClass('active');
+                            $('#' + index).find('.all-content').find('li:first-child').find('.event-info').removeClass('hidden');
 
                             // Toggle Status/More info
                             $('.event-toggle').on('click', function(e) {
                                 e.preventDefault();
 
+                                infoParent = $(this).parent();
+
+                                // hide if parent is not active
+                                if (!infoParent.hasClass('active')) {
+                                    $('.event-info').slideUp();
+                                    $('.event-info').addClass('hidden');
+                                }
+
+                                // add active state
                                 $('.all-content').find('li').removeClass('active');
-                                $(this).parent().addClass('active');
+                                infoParent.addClass('active');
+
+                                // show info
+                                eventInfo = $(this).next();
+                                eventInfo.slideToggle();
+                                eventInfo.toggleClass('hidden');
+
+                                eventId = $(this).data('eventid');
+
+                                // Make into function?
+                                $('.event-info-box .info-wrapper > div').html('');
+                                _.each(data, function(value, key) {
+                                    if (eventId == value.post_id) {
+                                        _.each(value, function(val, k) {
+                                            switch(k) {
+                                                case "event_start":
+                                                    startDate = moment.unix(val).format('h:mm A');
+                                                    $('.event-info-box').find('.' + k).html(startDate);
+                                                    break;
+
+                                                case "event_end":
+                                                    endDate = moment.unix(value).format('h:mm A');
+                                                    $('.event-info-box').find('.' + key).html(endDate);
+                                                    break;
+
+                                                case "the_title":
+                                                    $('.event-info-box').find('.' + k).html(_.unescape(val));
+                                                    break;
+
+                                                case "the_content":
+                                                    $('.event-info-box').find('.' + k).html(_.unescape(val));
+                                                    break;
+
+                                                default:
+                                                    $('.event-info-box').find('.' + k).html(val);
+                                                    break;
+                                            }
+                                        });
+                                    }
+                                });
+
                             });
 
                             $('#' + index).find('.pageInfo').flowtype({
@@ -327,7 +510,7 @@ function startUp(){
 
                             $('#' + index).find('.all-content').flowtype({
                                 minFont : 16,
-                                maxFont : 40,
+                                maxFont : 30,
                             });
 
                             $('#' + index).removeClass('displayNone');
@@ -354,6 +537,7 @@ function startUp(){
                                     returnSponsorType = $(php_output_partners);
 
                                     returnSponsorType.attr('data-sponsorshipid', value.post_id);
+                                    returnSponsorType.addClass(slugify(value.the_title));
                                     returnSponsorType.find('h3').html(value.the_title);
 
                                     returnObject.find('.all-content').append(returnSponsorType);
@@ -377,16 +561,28 @@ function startUp(){
                                                     break;
 
                                                 case "attachments":
-                                                    if (val != null) {
-                                                        _.each(val, function(l, m) {
-                                                            returnPartner.find('img').attr('src', l.thumb);
-                                                        })
+                                                    returnPartner.find('img').attr('src', value.featuredImage);
+                                                    websiteURL = value.website;
+                                                    if (websiteURL != "") {
+                                                        if (websiteURL.indexOf('http://') != -1) {
+                                                            websiteURL = websiteURL;
+                                                        } else {
+                                                            websiteURL = 'http://' + websiteURL;
+                                                        }
+                                                        returnPartner.find('img').wrap('<a target="_blank" />');
+                                                        returnPartner.find('a').attr('href', websiteURL);
                                                     }
+                                                    // if (val != null) {
+                                                    //     _.each(val, function(l, m) {
+                                                    //         returnPartner.find('img').wrap('<a />');
+                                                    //         returnPartner.find('img').attr('src', l.full);
+                                                    //     })
+                                                    // }
                                                     break;
                                             }
                                         });
                                         
-                                        $('.all-content').find('div[data-sponsorshipid="'+ value.partnership_type +'"] ul').append(returnPartner);
+                                        $('.all-content').find('div[data-sponsorshipid="'+ value.partnership_type +'"] ul').append(returnPartner).parent().removeClass('hidden');
 
                                     });
 
@@ -403,7 +599,7 @@ function startUp(){
 
                             $('#' + index).find('.all-content').flowtype({
                                 minFont : 16,
-                                maxFont : 40,
+                                maxFont : 22,
                             });
 
                             $('#' + index).removeClass('displayNone');
@@ -446,6 +642,7 @@ function startUp(){
                         pagesCollection['pageData'][index].css('z-index', zIndexMax--);
                         $('.mainView').append(pagesCollection['pageData'][index]);
                         returnJsonData('listPartnershipTypes', jsonArgs1).done(function(data) {
+                            debug0 = data;
 
                             // define object
                             returnObject = $(php_page_sponsorship);
@@ -479,8 +676,11 @@ function startUp(){
                                                 break;
                                         }
                                     });
-
-                                    returnObject.find('.all-sponsorship').append(returnSponsorship);
+                                    
+                                    // exclude media partners and association partners
+                                    if (value.post_id != '217' && value.post_id != '218') {
+                                        returnObject.find('.all-sponsorship').append(returnSponsorship);
+                                    }
                                 });
 
                             }
@@ -494,7 +694,22 @@ function startUp(){
 
                             $('#' + index).find('.all-sponsorship').flowtype({
                                 minFont : 16,
-                                maxFont : 115,
+                                maxFont : 22,
+                            });
+
+                            $('#' + index).removeClass('displayNone');
+                        });
+                    break;
+
+                    case "credit":
+                        pagesCollection['pageData'][index].attr('data-stellar-background-ratio', Math.random())
+                        pagesCollection['pageData'][index].css('z-index', zIndexMax--);
+                        $('.mainView').append(pagesCollection['pageData'][index]);
+                        returnJsonData('listPartnershipTypes', jsonArgs1).done(function(data) {
+
+                            $('#' + index).flowtype({
+                                minFont : 16,
+                                maxFont : 25,
                             });
 
                             $('#' + index).removeClass('displayNone');
@@ -517,6 +732,7 @@ function startUp(){
                 }
             })
             $(window).stellar();
+
             if(urlArray[0] != ""){
                 if(!(urlArray[0] == defaultPage) && (window.pageYOffset == 0)){
                     goToByScroll(urlArray[0]);
@@ -634,7 +850,7 @@ function startUp(){
             hideDefault: true
         };
         mainViewObject.find('.menu-item').each(function(index){
-            if((pagesCollection.hideDefault) && (slugify($(this).children('a').text()) == defaultPage)){
+            if((pagesCollection.hideDefault) && ( (slugify($(this).children('a').text()) == defaultPage) || (slugify($(this).children('a').text()) == 'test') )){
                 $(this).remove();
             } else {
                 pageOrder[slugify($(this).children('a').text())] = index;

@@ -4,7 +4,7 @@
 		<div class="status"></div>
 		<div class="the_title"></div>
 	</a>
-	<!-- <div class="event-info">
+	<div class="event-info hidden">
 		<div class="the_content"></div>
-	</div> -->
+	</div>
 </li>

@@ -27,6 +27,10 @@
     	wp_register_script('spectrum', get_template_directory_uri() . '/machines/libraries/spectrum/spectrum.js', array('jquery'), '1.0', false );
     	wp_enqueue_script('spectrum');
 
+    	wp_enqueue_style('shadowbox-style', get_template_directory_uri() . '/machines/libraries/shadowbox/shadowbox.css');
+    	wp_register_script('shadowbox', get_template_directory_uri() . '/machines/libraries/shadowbox/shadowbox.js', '', '1.0', false );
+    	wp_enqueue_script('shadowbox');
+
     	wp_register_script('backstretch', get_template_directory_uri() . '/machines/libraries/backstretch/jquery.backstretch.min.js', '', '1.0', false );
     	wp_enqueue_script('backstretch');
 
@@ -37,6 +41,7 @@
 
 // CUSTOM POST TYPE SPEAKERS 
 	include(get_template_directory() . '/machines/functions/custom_post_speakers.php');
+	include(get_template_directory() . '/machines/functions/custom_post_speakers_type.php');
 
 // CUSTOM POST TYPE EVENTS 
 	include(get_template_directory() . '/machines/functions/custom_post_events.php');
@@ -46,6 +51,9 @@
 
 // CUSTOM POST PARTNERS
 	include(get_template_directory() . '/machines/functions/custom_post_partners.php');
+
+// CUSTOM POST INFLUENCERS
+	include(get_template_directory() . '/machines/functions/custom_post_influencers.php');
 
 // GENERATE META BOXES
 	function generateMetaBoxes($arrayData){

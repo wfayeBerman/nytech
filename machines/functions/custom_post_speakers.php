@@ -81,6 +81,18 @@
 	        	"input_name" => "work_title"
 	        )
 	    ),
+	    "speackers_select_meta" => array(
+	    	"id" => "speackers_select_meta",
+	        "name" => "Select Type",
+	        "post_type" => "speakers",
+	        "position" => "side",
+	        "priority" => "low",
+	        "callback_args" => array(
+	        	"input_type" => "input_select",
+	        	"input_source" => "listSpeakers_type",
+	        	"input_name" => "speaker_type"
+	        )
+	    ),
 	);
 
 // ADD META BOXES
